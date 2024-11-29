@@ -1,15 +1,17 @@
 @import '../../../index.scss';
 
 .Upload {
-  color: $primary;
-  border: 1px solid;
-  padding: 1rem;
   position: relative;
-  max-width: 40rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.6em;
+  max-width: 40rem;
+  padding: 1rem;
+  margin: auto;
+  border: 1px solid;
+  border-radius: 1rem;
+  color: $primary;
 
   &__Icon {
     width: 2rem;
