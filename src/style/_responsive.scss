@@ -1,0 +1,23 @@
+$pc-width: 1300px;
+
+@mixin medium {
+  @media (max-width: #{$pc-width - 1}) {
+    @content;
+  }
+}
+
+@mixin large {
+  @media (min-width: #{$pc-width }) {
+    @content;
+  }
+}
+
+html {
+  @include medium {
+    font-size: 13px;
+  }
+
+  @include large {
+    font-size: 20px;
+  }
+}

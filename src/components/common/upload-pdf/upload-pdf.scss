@@ -1,0 +1,35 @@
+@import '../../../style/index.scss';
+
+.Upload {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  padding: 1rem;
+  border: 1px solid;
+  border-radius: 1rem;
+  color: $primary;
+
+  &__Icon {
+    width: 2rem;
+  }
+
+  &__Message {
+    text-align: center;
+    word-break: keep-all;
+    white-space: pre-line;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__Input {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
