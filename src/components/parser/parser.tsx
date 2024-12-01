@@ -3,9 +3,10 @@ import { loadPdf } from '../../utils/pdfjs';
 
 const TARGET_PATTERN = '신·구조문대비표';
 const BASE_X_POSITION = 300;
+type PdfPageType = (TextItem | TextMarkedContent)[];
 
 const parseTargetPart = async (pdf: PDFDocumentProxy) => {
-  const pages: (TextItem | TextMarkedContent)[][] = [];
+  const pages: PdfPageType[] = [];
   let isMatched = false;
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
@@ -23,19 +24,19 @@ const parseTargetPart = async (pdf: PDFDocumentProxy) => {
   return pages;
 };
 
-const parsingText = (pages: (TextItem | TextMarkedContent)[][]) => {
-  let left: string[] = [];
-  let right: string[] = [];
+const parsingText = (pages: PdfPageType[]) => {
   const parsedPages: string[][][] = [];
 
   pages.forEach((page) => {
     let parsedPage: string[][] = [];
+    let left: string[] = [];
+    let right: string[] = [];
 
     page.forEach((item) => {
       if (!('transform' in item)) return;
 
       const xPosition = item.transform[4];
-      if (xPosition < BASE_X_POSITION) {
+      if (xPosition < BASE_X_POSITION && right.length === 0) {
         left.push(item.str);
       } else if (xPosition > BASE_X_POSITION) {
         right.push(item.str);
@@ -45,15 +46,13 @@ const parsingText = (pages: (TextItem | TextMarkedContent)[][]) => {
         right = [];
       }
     });
-
     parsedPage.push([left.join(''), right.join('')]);
     parsedPages.push(parsedPage);
   });
-
   return parsedPages;
 };
 
-const initParser = async (file: File) => {
+const initializeParser = async (file: File) => {
   try {
     const pdf = await loadPdf(file);
     const pages = await parseTargetPart(pdf);
@@ -69,7 +68,7 @@ interface ParserProp {
 }
 
 export default function Parser({ file }: ParserProp) {
-  initParser(file);
+  initializeParser(file);
 
   return <div>parsing결과는 conosle창에서 확인가능합니다.</div>;
 }
