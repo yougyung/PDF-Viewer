@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import UploadPdf from './components/common/upload-pdf/upload-pdf';
 import './style/app.scss';
+import Viewer from './components/common/viewer/viewer';
 
 function App() {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
@@ -22,6 +23,7 @@ function App() {
           결과 확인하기
         </button>
       </form>
+      {uploadFile && <Viewer file={uploadFile} />}
     </div>
   );
 }
