@@ -1,41 +1,18 @@
-import { useEffect, useRef } from 'react';
-import { getDocument } from 'pdfjs-dist';
+import { useRef } from 'react';
 import './viewer.scss';
-import { GlobalWorkerOptions } from 'pdfjs-dist';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
+import { loadPdf } from '../../../utils/pdfjs';
 
 interface ViewerProp {
   file: File;
 }
 
 export default function Viewer({ file }: ViewerProp) {
-  const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
-  GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const loadPdf = async (file: File) => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      const pdf = await getDocument(uint8Array).promise;
-
-      clearContainer();
-      await renderAllPages(pdf);
-    } catch (error) {
-      console.error('PDF 로드 오류:', error);
-    }
-  };
 
   const clearContainer = () => {
     if (containerRef.current) {
       containerRef.current.innerHTML = '';
-    }
-  };
-
-  const renderAllPages = async (pdf: PDFDocumentProxy) => {
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      await renderPage(page);
     }
   };
 
@@ -60,6 +37,13 @@ export default function Viewer({ file }: ViewerProp) {
     }
   };
 
+  const renderAllPages = async (pdf: PDFDocumentProxy) => {
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      await renderPage(page);
+    }
+  };
+
   const initializeCanvas = (width: number, height: number): HTMLCanvasElement | null => {
     const canvas = document.createElement('canvas');
     canvas.width = width;
@@ -67,7 +51,17 @@ export default function Viewer({ file }: ViewerProp) {
     return canvas;
   };
 
-  loadPdf(file);
+  const initViewer = async (file: File) => {
+    try {
+      clearContainer();
+      const pdf = await loadPdf(file);
+      await renderAllPages(pdf);
+    } catch (error) {
+      console.error('pdf load error', error);
+    }
+  };
+
+  initViewer(file);
 
   return <div className="Viewer" ref={containerRef}></div>;
 }

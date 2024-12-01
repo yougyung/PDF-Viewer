@@ -1,17 +1,8 @@
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
 import { PDFDocumentProxy, TextItem, TextMarkedContent } from 'pdfjs-dist/types/src/display/api';
+import { loadPdf } from '../../utils/pdfjs';
 
-const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 const TARGET_PATTERN = '신·구조문대비표';
 const BASE_X_POSITION = 300;
-
-const loadPdf = async (file: File) => {
-  GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
-  const arrayBuffer = await file.arrayBuffer();
-  const uint8Array = new Uint8Array(arrayBuffer);
-  const pdf = await getDocument(uint8Array).promise;
-  return pdf;
-};
 
 const parseTargetPart = async (pdf: PDFDocumentProxy) => {
   const pages: (TextItem | TextMarkedContent)[][] = [];
@@ -62,19 +53,23 @@ const parsingText = (pages: (TextItem | TextMarkedContent)[][]) => {
   return parsedPages;
 };
 
-const parsePdf = async (file: File) => {
+const initParser = async (file: File) => {
   try {
     const pdf = await loadPdf(file);
     const pages = await parseTargetPart(pdf);
     const parsedText = parsingText(pages);
     console.log(parsedText);
   } catch (error) {
-    console.error('PDF 처리 중 오류 발생:', error);
+    console.error('pdf parser error', error);
   }
 };
 
-export default function Parser({ file }: { file: File }) {
-  parsePdf(file);
+interface ParserProp {
+  file: File;
+}
+
+export default function Parser({ file }: ParserProp) {
+  initParser(file);
 
   return <div>parsing결과는 conosle창에서 확인가능합니다.</div>;
 }
