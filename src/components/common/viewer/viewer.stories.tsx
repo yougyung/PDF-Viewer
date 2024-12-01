@@ -21,7 +21,7 @@ const meta = {
 
 export default meta;
 
-export const WithFileInput: StoryObj<typeof meta> = {
+export const Default: StoryObj<typeof meta> = {
   args: {
     file: new File(['mock'], 'mock.pdf', { type: 'application/pdf' }),
   },
