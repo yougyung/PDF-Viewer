@@ -1,9 +1,16 @@
 import { useRef } from 'react';
 import { getDocument } from 'pdfjs-dist';
 import './viewer.scss';
+import { GlobalWorkerOptions } from 'pdfjs-dist';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 
-export default function Viewer({ file }: { file: File }) {
+interface ViewerProp {
+  file: File;
+}
+
+export default function Viewer({ file }: ViewerProp) {
+  const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+  GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const loadPdf = async (file: File) => {
