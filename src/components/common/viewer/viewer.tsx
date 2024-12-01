@@ -3,6 +3,13 @@ import './viewer.scss';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { loadPdf } from '../../../utils/pdfjs';
 
+const initializeCanvas = (width: number, height: number): HTMLCanvasElement | null => {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  return canvas;
+};
+
 interface ViewerProp {
   file: File;
 }
@@ -44,14 +51,7 @@ export default function Viewer({ file }: ViewerProp) {
     }
   };
 
-  const initializeCanvas = (width: number, height: number): HTMLCanvasElement | null => {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    return canvas;
-  };
-
-  const initViewer = async (file: File) => {
+  const initializeViewer = async (file: File) => {
     try {
       clearContainer();
       const pdf = await loadPdf(file);
@@ -61,7 +61,7 @@ export default function Viewer({ file }: ViewerProp) {
     }
   };
 
-  initViewer(file);
+  initializeViewer(file);
 
   return <div className="Viewer" ref={containerRef}></div>;
 }
