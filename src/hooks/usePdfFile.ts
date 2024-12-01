@@ -13,5 +13,5 @@ export default function usePdfFile() {
     if (validatePdf(file)) setFile(file);
   };
 
-  return { file, changeFile };
+  return { file, changeFile, validatePdf };
 }
