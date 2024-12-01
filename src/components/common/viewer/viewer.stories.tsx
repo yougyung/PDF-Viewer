@@ -25,8 +25,8 @@ export const Default: StoryObj<typeof meta> = {
   args: {
     file: new File(['mock'], 'mock.pdf', { type: 'application/pdf' }),
   },
-  render: () => {
-    const [file, setFile] = useState<File | null>(null);
+  render: (args) => {
+    const [file, setFile] = useState<File>(args.file);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files.length > 0) {
