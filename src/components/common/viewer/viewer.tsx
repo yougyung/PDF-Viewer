@@ -55,7 +55,6 @@ export default function Viewer({ file }: ViewerProp) {
           viewport: scaledViewport,
         };
         await page.render(renderContext).promise;
-
         containerRef.current?.appendChild(canvas);
       }
     }
