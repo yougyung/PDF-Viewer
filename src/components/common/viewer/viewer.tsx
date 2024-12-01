@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { getDocument } from 'pdfjs-dist';
 import './viewer.scss';
 import { GlobalWorkerOptions } from 'pdfjs-dist';
@@ -40,15 +40,19 @@ export default function Viewer({ file }: ViewerProp) {
   };
 
   const renderPage = async (page: PDFPageProxy) => {
-    const viewport = page.getViewport({ scale: 1.5 });
-    const canvas = initializeCanvas(viewport.width, viewport.height);
+    const viewport = page.getViewport({ scale: 1 });
 
+    const containerWidth = containerRef.current?.clientWidth || 0;
+    const scale = containerWidth / viewport.width;
+    const scaledViewport = page.getViewport({ scale });
+
+    const canvas = initializeCanvas(scaledViewport.width, scaledViewport.height);
     if (canvas) {
       const context = canvas.getContext('2d');
       if (context) {
         const renderContext = {
           canvasContext: context,
-          viewport,
+          viewport: scaledViewport,
         };
         await page.render(renderContext).promise;
 
